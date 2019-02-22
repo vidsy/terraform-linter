@@ -59,7 +59,6 @@ func main() {
 			err = lintData(config)
 		case "providers.tf":
 			err = lintProviders(config)
-		default:
 		}
 
 		if err != nil {
