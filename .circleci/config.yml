@@ -1,0 +1,52 @@
+version: 2.1
+
+orbs:
+  common: vidsy/common@volatile
+  go: vidsy/go@volatile
+  services: vidsy/services@volatile
+
+ignore-master: &ignore-master
+  filters:
+    branches:
+      ignore: master
+
+require-build: &require-build
+  requires:
+    - go/install-and-build-binary
+
+tagged-build: &tagged-build
+  tags:
+    only: /[0-9]+\.[0-9]+\.[0-9]+/
+
+vendor-cache-key: &vendor-cache-key
+  vendor-cache-key: vendor-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ checksum "Gopkg.lock" }}-v1
+
+working-directory: &working-directory
+  working-directory: /go/src/github.com/vidsy/terraform-linter
+
+workflows:
+  build-test-deploy:
+    jobs:
+      - common/check-for-clubhouse-ticket-comment:
+          context: org-github-docker-hub
+          <<: *ignore-master
+      - common/check-version:
+          <<: *ignore-master
+          <<: *working-directory
+      - go/install-and-build-binary:
+          binary-name: terraform-linter
+          filters:
+            <<: *tagged-build
+          <<: *vendor-cache-key
+          <<: *working-directory
+      - go/test:
+          filters:
+            <<: *tagged-build
+          <<: *require-build
+          <<: *vendor-cache-key
+          <<: *working-directory
+      - go/vet:
+          <<: *ignore-master
+          <<: *require-build
+          <<: *vendor-cache-key
+          <<: *working-directory
