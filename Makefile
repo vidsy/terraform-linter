@@ -23,7 +23,7 @@ release:
 
 run:
 	@go build -i -ldflags "-X main.Version=${VERSION}-dev -X main.BuildTime=17/01/2017T14:12:35+0000"
-	@DEBUG=true ./${REPONAME} ${ARGS}
+	@./${REPONAME} ${ARGS}
 
 test:
 	@go test "${PACKAGES}" -cover
