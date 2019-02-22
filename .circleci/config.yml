@@ -1,5 +1,14 @@
 version: 2.1
 
+binary-cache-key: &binary-cache-key
+  key: binary-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ .Revision }}
+
+vendor-cache-key: &vendor-cache-key
+  vendor-cache-key: vendor-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ checksum "Gopkg.lock" }}-v1
+
+working-directory: &working-directory
+  working-directory: /go/src/github.com/vidsy/terraform-linter
+
 jobs:
   release:
     working_directory: /go/src/github.com/vidsy/terraform-linter
@@ -29,15 +38,6 @@ require-build: &require-build
 tagged-build: &tagged-build
   tags:
     only: /[0-9]+\.[0-9]+\.[0-9]+/
-
-binary-cache-key: &binary-cache-key
-  key: binary-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ .Revision }}
-
-vendor-cache-key: &vendor-cache-key
-  vendor-cache-key: vendor-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ checksum "Gopkg.lock" }}-v1
-
-working-directory: &working-directory
-  working-directory: /go/src/github.com/vidsy/terraform-linter
 
 workflows:
   build-test-deploy:
