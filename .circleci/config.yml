@@ -18,7 +18,7 @@ jobs:
       - checkout
       - run: apk update && apk add ca-certificates make
       - restore_cache:
-          <<: &binary-cache-key
+          <<: *binary-cache-key
       - run: make release -e VIDSY_GOBOT_GITHUB_TOKEN=${VIDSY_GOBOT_GITHUB_TOKEN}
 
 orbs:
