@@ -1,5 +1,7 @@
 builds:
-  - binary: cli
+  -
+    binary: '{{ .Env.CMD_PATH }}'
+    main: ./cmd/terraform/linter/main.go
     goos:
       - darwin
       - linux

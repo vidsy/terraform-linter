@@ -12,6 +12,14 @@ import (
 	"github.com/hashicorp/terraform/config"
 )
 
+var (
+	// Version the version of the CLI.
+	Version string
+
+	// BuildTime the time the binary was built.
+	BuildTime string
+)
+
 func main() {
 	tfDirectory := flag.String("tf-directory", "", "The directory that contains the terraform files to lint")
 	flag.Parse()
