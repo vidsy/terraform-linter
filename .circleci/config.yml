@@ -32,6 +32,7 @@ workflows:
           <<: *ignore-master
       - common/check-version:
           <<: *ignore-master
+          <<: *working-directory
       - go/install-and-build-binary:
           binary-name: terraform-linter
           filters:
