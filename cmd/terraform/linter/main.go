@@ -134,9 +134,9 @@ func lintResources(terraformConfig *config.Config) error {
 		)
 	}
 
-	if len(terraformConfig.Resources) == 0 {
+	if len(terraformConfig.Resources) == 0 && len(terraformConfig.Modules) == 0 && len(terraformConfig.Locals) == 0 {
 		return errors.New(
-			"contains no resources, either remove the file or add some resources",
+			"contains no resources, modules or locals. Either remove the file or add some resources/modules/locals",
 		)
 	}
 
