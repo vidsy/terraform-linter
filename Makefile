@@ -8,7 +8,7 @@ BUILD_TIME ?= "$(shell date +'%d/%m/%YT%H:%M:%S%z')"
 DEFAULT: test
 
 build:
-	@go build -i -ldflags "-X ${CMD_PATH}/main.Version=${VERSION}-dev -X ${CMD_PATH}/main.BuildTime=17/01/2017T14:12:35+0000" -o ${REPONAME} ${CMD_PATH}
+	@go build -i -o ${REPONAME} ${CMD_PATH}
 
 install:
 	@echo "=> Installing dependencies"
@@ -23,7 +23,7 @@ push-tag:
 
 release:
 	rm -rf dist
-	@GITHUB_TOKEN=${VIDSY_GOBOT_GITHUB_TOKEN} VERSION=${VERSION} BUILD_TIME=%${BUILD_TIME} goreleaser
+	@GITHUB_TOKEN=${VIDSY_GOBOT_GITHUB_TOKEN}  goreleaser
 
 run: build
 	@./${REPONAME} ${ARGS}
