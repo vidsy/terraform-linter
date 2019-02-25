@@ -135,5 +135,5 @@ func lintVariables(terraformConfig *config.Config) error {
 }
 
 func validTFFile(file os.FileInfo) bool {
-	return file.IsDir() || filepath.Ext(file.Name()) != ".tf"
+	return !file.IsDir() && filepath.Ext(file.Name()) == ".tf"
 }
