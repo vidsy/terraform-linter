@@ -9,6 +9,12 @@ vendor-cache-key: &vendor-cache-key
 working-directory: &working-directory
   working-directory: /go/src/github.com/vidsy/terraform-linter
 
+executors:
+  build-path-builder:
+    docker:
+      - image: vidsyhq/go-builder:latest
+    environment:
+        BUILD_PATH: github.com/vidsy/terraform-linter/cmd/terraform/linter
 jobs:
   release:
     working_directory: /go/src/github.com/vidsy/terraform-linter
@@ -23,7 +29,7 @@ jobs:
 
 orbs:
   common: vidsy/common@volatile
-  go: vidsy/go@volatile
+  go: vidsy/go@dev:task/go-builder-executor-parameter
   services: vidsy/services@volatile
 
 ignore-master: &ignore-master
@@ -49,6 +55,7 @@ workflows:
           <<: *ignore-master
       - go/install-and-build-binary:
           binary-name: terraform-linter
+          executor: build-path-builder
           filters:
             <<: *tagged-build
           <<: *vendor-cache-key
