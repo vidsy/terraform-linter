@@ -55,12 +55,14 @@ func main() {
 		}
 
 		switch file.Name() {
-		case "resources.tf":
-			err = lintResources(config)
 		case "data.tf":
 			err = lintData(config)
 		case "providers.tf":
 			err = lintProviders(config)
+		case "resources.tf":
+			err = lintResources(config)
+		case "variables.tf":
+			err = lintVariables(config)
 		}
 
 		if err != nil {
@@ -138,6 +140,25 @@ func lintResources(terraformConfig *config.Config) error {
 		if resource.Mode == config.DataResourceMode {
 			return errors.New(
 				"should not contain any data resources, please move to 'data.tf'",
+			)
+		}
+	}
+
+	return nil
+}
+
+func lintVariables(terraformConfig *config.Config) error {
+	if len(terraformConfig.Variables) == 0 {
+		return errors.New(
+			"no variables found, either add some or remove the file",
+		)
+	}
+
+	for _, variable := range terraformConfig.Variables {
+		if val, ok := variable.Default.(string); ok && val == "" {
+			return fmt.Errorf(
+				"variable '%s' contains a blank default, please remove the default",
+				variable.Name,
 			)
 		}
 	}
