@@ -29,7 +29,7 @@ jobs:
 
 orbs:
   common: vidsy/common@volatile
-  go: vidsy/go@dev:task/go-builder-executor-parameter
+  go: vidsy/go@volatile
   services: vidsy/services@volatile
 
 ignore-master: &ignore-master
