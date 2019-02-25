@@ -1,12 +1,12 @@
 package main
 
 import (
-	"errors"
 	"flag"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/pkg/errors"
 )
 
 func main() {
@@ -17,7 +17,8 @@ func main() {
 	)
 	flag.Parse()
 
-	if valid, err := isValidDirectory(*tfDirectory); !valid {
+	err := isValidDirectory(*tfDirectory)
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -32,22 +33,22 @@ func main() {
 	}
 }
 
-func isValidDirectory(path string) (bool, error) {
+func isValidDirectory(path string) error {
 	if path == "" {
-		return false, errors.New("tf-directory is blank")
+		return errors.New("tf-directory is blank")
 	}
 
 	directoryInfo, err := os.Stat(path)
 	if err != nil {
-		return false, err
+		return errors.Wrap(err, "Problem stating directory")
 	}
 
 	if !directoryInfo.IsDir() {
-		return false, fmt.Errorf(
+		return errors.Errorf(
 			"Expected '%s' to be a directory",
 			path,
 		)
 	}
 
-	return true, nil
+	return nil
 }

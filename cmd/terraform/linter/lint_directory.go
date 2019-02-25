@@ -1,10 +1,11 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/pkg/errors"
 
 	"github.com/hashicorp/terraform/config"
 )
@@ -13,14 +14,18 @@ import (
 // structure of stacks.
 func LintDirectory(directory string, files []os.FileInfo) error {
 	for _, file := range files {
-		if !validTFFile(file) {
+		if !isValidTFFile(file) {
 			continue
 		}
 
 		filePath := fmt.Sprintf("%s/%s", directory, file.Name())
 		config, err := config.LoadFile(filePath)
 		if err != nil {
-			return err
+			return errors.Wrapf(
+				err,
+				"Problem parsing terraform config in %s",
+				filePath,
+			)
 		}
 
 		switch file.Name() {
@@ -35,7 +40,11 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 		}
 
 		if err != nil {
-			return fmt.Errorf("%s - %s", file.Name(), err)
+			return errors.Errorf(
+				"%s - %s",
+				file.Name(),
+				err,
+			)
 		}
 	}
 
@@ -75,7 +84,7 @@ func lintProviders(terraformConfig *config.Config) error {
 	}
 
 	if len(terraformConfig.Resources) > 0 {
-		return fmt.Errorf(
+		return errors.Errorf(
 			"contains %d resources, please move to either 'resources.tf' or 'data.tf' depending on type",
 			len(terraformConfig.Resources),
 		)
@@ -92,7 +101,7 @@ func lintResources(terraformConfig *config.Config) error {
 	}
 
 	if len(terraformConfig.ProviderConfigs) > 0 {
-		return fmt.Errorf(
+		return errors.Errorf(
 			"contains %d provider resource(s), these should be placed in 'providers.tf'",
 			len(terraformConfig.ProviderConfigs),
 		)
@@ -124,7 +133,7 @@ func lintVariables(terraformConfig *config.Config) error {
 
 	for _, variable := range terraformConfig.Variables {
 		if val, ok := variable.Default.(string); ok && val == "" {
-			return fmt.Errorf(
+			return errors.Errorf(
 				"variable '%s' contains a blank default, please remove the default",
 				variable.Name,
 			)
@@ -134,6 +143,6 @@ func lintVariables(terraformConfig *config.Config) error {
 	return nil
 }
 
-func validTFFile(file os.FileInfo) bool {
+func isValidTFFile(file os.FileInfo) bool {
 	return !file.IsDir() && filepath.Ext(file.Name()) == ".tf"
 }
