@@ -30,13 +30,13 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 
 		switch file.Name() {
 		case "data.tf":
-			err = lintData(config)
+			err = lintData(config.Resources)
 		case "providers.tf":
 			err = lintProviders(config)
 		case "resources.tf":
 			err = lintResources(config)
 		case "variables.tf":
-			err = lintVariables(config)
+			err = lintVariables(config.Variables)
 		}
 
 		if err != nil {
@@ -52,14 +52,14 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 
 }
 
-func lintData(terraformConfig *config.Config) error {
-	if len(terraformConfig.Resources) == 0 {
+func lintData(resources []*config.Resource) error {
+	if len(resources) == 0 {
 		return errors.New(
 			"contains no resources, either remove the file or add some data resources",
 		)
 	}
 
-	for _, resource := range terraformConfig.Resources {
+	for _, resource := range resources {
 		if resource.Mode != config.DataResourceMode {
 			return errors.New(
 				"should only contain data resources, please remove",
@@ -70,52 +70,52 @@ func lintData(terraformConfig *config.Config) error {
 	return nil
 }
 
-func lintProviders(terraformConfig *config.Config) error {
-	if terraformConfig.Terraform == nil {
+func lintProviders(conf *config.Config) error {
+	if conf.Terraform == nil {
 		return errors.New(
 			"contains no terraform resource, either remove the file or add a terraform resource",
 		)
 	}
 
-	if len(terraformConfig.ProviderConfigs) == 0 {
+	if len(conf.ProviderConfigs) == 0 {
 		return errors.New(
 			"contains no provider resources, if other resources exist add one or remove the file",
 		)
 	}
 
-	if len(terraformConfig.Resources) > 0 {
+	if len(conf.Resources) > 0 {
 		return errors.Errorf(
 			"contains %d resources, please move to either 'resources.tf' or 'data.tf' depending on type",
-			len(terraformConfig.Resources),
+			len(conf.Resources),
 		)
 	}
 
 	return nil
 }
 
-func lintResources(terraformConfig *config.Config) error {
-	if terraformConfig.Terraform != nil {
+func lintResources(conf *config.Config) error {
+	if conf.Terraform != nil {
 		return errors.New(
 			"contains a terraform resource, this should be placed in 'providers.tf'",
 		)
 	}
 
-	if len(terraformConfig.ProviderConfigs) > 0 {
+	if len(conf.ProviderConfigs) > 0 {
 		return errors.Errorf(
 			"contains %d provider resource(s), these should be placed in 'providers.tf'",
-			len(terraformConfig.ProviderConfigs),
+			len(conf.ProviderConfigs),
 		)
 	}
 
-	if len(terraformConfig.Resources) == 0 &&
-		len(terraformConfig.Modules) == 0 &&
-		len(terraformConfig.Locals) == 0 {
+	if len(conf.Resources) == 0 &&
+		len(conf.Modules) == 0 &&
+		len(conf.Locals) == 0 {
 		return errors.New(
 			"contains no resources, modules or locals. Either remove the file or add some resources/modules/locals",
 		)
 	}
 
-	for _, resource := range terraformConfig.Resources {
+	for _, resource := range conf.Resources {
 		if resource.Mode == config.DataResourceMode {
 			return errors.New(
 				"should not contain any data resources, please move to 'data.tf'",
@@ -126,14 +126,14 @@ func lintResources(terraformConfig *config.Config) error {
 	return nil
 }
 
-func lintVariables(terraformConfig *config.Config) error {
-	if len(terraformConfig.Variables) == 0 {
+func lintVariables(variables []*config.Variable) error {
+	if len(variables) == 0 {
 		return errors.New(
 			"no variables found, either add some or remove the file",
 		)
 	}
 
-	for _, variable := range terraformConfig.Variables {
+	for _, variable := range variables {
 		if val, ok := variable.Default.(string); ok && val == "" {
 			return errors.Errorf(
 				"variable '%s' contains a blank default, please remove the default",
