@@ -13,24 +13,8 @@ func main() {
 	tfDirectory := flag.String("tf-directory", "", "The directory that contains the terraform files to lint")
 	flag.Parse()
 
-	if *tfDirectory == "" {
-		log.Fatal(
-			errors.New("tf-directory is blank"),
-		)
-	}
-
-	directoryInfo, err := os.Stat(*tfDirectory)
-	if err != nil {
+	if valid, err := isValidDirectory(*tfDirectory); !valid {
 		log.Fatal(err)
-	}
-
-	if !directoryInfo.IsDir() {
-		log.Fatal(
-			fmt.Errorf(
-				"Expected '%s' to be a directory",
-				*tfDirectory,
-			),
-		)
 	}
 
 	files, err := ioutil.ReadDir(*tfDirectory)
@@ -42,4 +26,24 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func isValidDirectory(path string) (bool, error) {
+	if path == "" {
+		return false, errors.New("tf-directory is blank")
+	}
+
+	directoryInfo, err := os.Stat(path)
+	if err != nil {
+		return false, err
+	}
+
+	if !directoryInfo.IsDir() {
+		return false, fmt.Errorf(
+			"Expected '%s' to be a directory",
+			path,
+		)
+	}
+
+	return true, nil
 }
