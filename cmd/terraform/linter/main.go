@@ -19,17 +19,17 @@ func main() {
 
 	err := isValidDirectory(*tfDirectory)
 	if err != nil {
-		log.Fatal(err)
+		logFatalError(err)
 	}
 
 	files, err := ioutil.ReadDir(*tfDirectory)
 	if err != nil {
-		log.Fatal(err)
+		logFatalError(err)
 	}
 
 	err = LintDirectory(*tfDirectory, files)
 	if err != nil {
-		log.Fatal(err)
+		logFatalError(err)
 	}
 }
 
@@ -51,4 +51,8 @@ func isValidDirectory(path string) error {
 	}
 
 	return nil
+}
+
+func logFatalError(err error) {
+	log.Fatalf("%+v", err)
 }
