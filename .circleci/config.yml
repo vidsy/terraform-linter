@@ -57,7 +57,7 @@ workflows:
           executor: build-path-builder
           filters:
             <<: *tagged-build
-          <<: *vendor-cache-key
+          <<: *vendor-cache-key-parameter
           <<: *working-directory
       - release:
           context: org-go-services
@@ -74,10 +74,10 @@ workflows:
           filters:
             <<: *tagged-build
           <<: *require-build
-          <<: *vendor-cache-key
+          <<: *vendor-cache-key-parameter
           <<: *working-directory
       - go/vet:
           <<: *ignore-master
           <<: *require-build
-          <<: *vendor-cache-key
+          <<: *vendor-cache-key-parameter
           <<: *working-directory
