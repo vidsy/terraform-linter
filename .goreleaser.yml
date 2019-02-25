@@ -1,0 +1,9 @@
+builds:
+  -
+    binary: terraform-linter
+    main: ./cmd/terraform/linter/main.go
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
