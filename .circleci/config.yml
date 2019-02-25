@@ -21,7 +21,7 @@ jobs:
       - checkout
       - run: apk update && apk add ca-certificates make
       - restore_cache:
-          <<: *vendor-cache-key
+          key: vendor-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ checksum "Gopkg.lock" }}-v1
       - run: make release -e VIDSY_GOBOT_GITHUB_TOKEN=${VIDSY_GOBOT_GITHUB_TOKEN}
 
 orbs:
