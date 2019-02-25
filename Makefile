@@ -3,7 +3,6 @@ REPONAME ?= "terraform-linter"
 VERSION ?= $(shell cat ./VERSION)
 PACKAGES ?= "./..."
 CMD_PATH ?= "github.com/vidsy/terraform-linter/cmd/terraform/linter"
-BUILD_TIME ?= "$(shell date +'%d/%m/%YT%H:%M:%S%z')"
 
 DEFAULT: test
 
