@@ -10,7 +10,11 @@ import (
 )
 
 func main() {
-	tfDirectory := flag.String("tf-directory", "", "The directory that contains the terraform files to lint")
+	tfDirectory := flag.String(
+		"tf-directory",
+		"",
+		"The directory that contains the terraform files to lint",
+	)
 	flag.Parse()
 
 	if valid, err := isValidDirectory(*tfDirectory); !valid {
