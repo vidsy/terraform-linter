@@ -1,10 +1,9 @@
 version: 2.1
 
-binary-cache-key: &binary-cache-key
-  key: binary-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ .Revision }}
+vendor-cache-key: &vendor-cache-key vendor-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ checksum "Gopkg.lock" }}-v1
 
-vendor-cache-key: &vendor-cache-key
-  vendor-cache-key: vendor-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ checksum "Gopkg.lock" }}-v1
+vendor-cache-key-parameter: &vendor-cache-key-parameter
+  vendor-cache-key: *vendor-cache-key
 
 working-directory: &working-directory
   working-directory: /go/src/github.com/vidsy/terraform-linter
@@ -24,7 +23,7 @@ jobs:
       - checkout
       - run: apk update && apk add ca-certificates make
       - restore_cache:
-          <<: *binary-cache-key
+          key: *vendor-cache-key
       - run: make release -e VIDSY_GOBOT_GITHUB_TOKEN=${VIDSY_GOBOT_GITHUB_TOKEN}
 
 orbs:
@@ -58,8 +57,7 @@ workflows:
           executor: build-path-builder
           filters:
             <<: *tagged-build
-          <<: *vendor-cache-key
-          <<: *vendor-cache-key
+          <<: *vendor-cache-key-parameter
           <<: *working-directory
       - release:
           context: org-go-services
@@ -76,10 +74,10 @@ workflows:
           filters:
             <<: *tagged-build
           <<: *require-build
-          <<: *vendor-cache-key
+          <<: *vendor-cache-key-parameter
           <<: *working-directory
       - go/vet:
           <<: *ignore-master
           <<: *require-build
-          <<: *vendor-cache-key
+          <<: *vendor-cache-key-parameter
           <<: *working-directory
