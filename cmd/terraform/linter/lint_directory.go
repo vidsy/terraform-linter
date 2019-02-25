@@ -9,9 +9,9 @@ import (
 	"github.com/hashicorp/terraform/config"
 )
 
-// Linter takes a set files an lints them based on the Vidsy
+// LintDirectory takes a set files an lints them based on the Vidsy
 // structure of stacks.
-func Linter(directory string, files []os.FileInfo) error {
+func LintDirectory(directory string, files []os.FileInfo) error {
 	for _, file := range files {
 		if file.IsDir() || filepath.Ext(file.Name()) != ".tf" {
 			continue

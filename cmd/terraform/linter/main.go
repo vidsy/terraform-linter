@@ -22,7 +22,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = Linter(*tfDirectory, files)
+	err = LintDirectory(*tfDirectory, files)
 	if err != nil {
 		log.Fatal(err)
 	}
