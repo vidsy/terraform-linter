@@ -1,7 +1,7 @@
 builds:
   -
     binary: terraform-linter
-    main: ./cmd/terraform/linter/main.go
+    main: ./cmd/terraform/linter
     goos:
       - darwin
       - linux
