@@ -13,7 +13,7 @@ import (
 // structure of stacks.
 func LintDirectory(directory string, files []os.FileInfo) error {
 	for _, file := range files {
-		if file.IsDir() || filepath.Ext(file.Name()) != ".tf" {
+		if !validTFFile(file) {
 			continue
 		}
 
@@ -132,4 +132,8 @@ func lintVariables(terraformConfig *config.Config) error {
 	}
 
 	return nil
+}
+
+func validTFFile(file os.FileInfo) bool {
+	return file.IsDir() || filepath.Ext(file.Name()) != ".tf"
 }
