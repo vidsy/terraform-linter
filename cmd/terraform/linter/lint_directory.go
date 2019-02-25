@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform/config"
 )
 
-// LintDirectory takes a set files an lints them based on the Vidsy
+// LintDirectory takes an set files an lints them based on the Vidsy
 // structure of stacks.
 func LintDirectory(directory string, files []os.FileInfo) error {
 	for _, file := range files {
