@@ -9,6 +9,12 @@ DEFAULT: test
 build:
 	@go build -i -o ${REPONAME} ${CMD_PATH}
 
+build-image:
+	@docker build -t vidsyhq/${REPONAME} --build-arg VERSION=${VERSION} .
+
+docker-login:
+	@docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+
 install:
 	@echo "=> Installing dependencies"
 	@dep ensure
@@ -19,6 +25,11 @@ push-tag:
 	git pull origin ${BRANCH}
 	git tag ${VERSION}
 	git push origin ${BRANCH} ${VERSION}
+
+push-to-registry: docker login
+	@docker tag vidsyhq/${REPONAME}:latest vidsyhq/${REPONAME}:${CIRCLE_TAG}
+	@docker push vidsyhq/${REPONAME}:${CIRCLE_TAG}
+	@docker push vidsyhq/${REPONAME}
 
 release:
 	rm -rf dist

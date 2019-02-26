@@ -50,10 +50,23 @@ workflows:
       - common/check-for-clubhouse-ticket-comment:
           context: org-github-docker-hub
           <<: *ignore-master
+      - go/build-docker-container:
+          <<: *ignore-master
+          <<: *require-build
+          <<: *working-directory
+      - go/deploy:
+          context: org-aws-ecr
+          filters:
+            branches:
+              ignore: /.*/
+            <<: *tagged-build
+          requires:
+            - go/test
+          <<: *working-directory
       - common/check-version:
           <<: *ignore-master
       - go/install-and-build-binary:
-          binary-name: terraform-linter
+          binary-name: linter
           executor: build-path-builder
           filters:
             <<: *tagged-build
