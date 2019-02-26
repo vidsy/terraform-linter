@@ -26,7 +26,7 @@ push-tag:
 	git tag ${VERSION}
 	git push origin ${BRANCH} ${VERSION}
 
-push-to-docker-hub: docker login
+push-to-docker-hub: docker-login
 	@docker tag vidsyhq/${REPONAME}:latest vidsyhq/${REPONAME}:${CIRCLE_TAG}
 	@docker push vidsyhq/${REPONAME}:${CIRCLE_TAG}
 	@docker push vidsyhq/${REPONAME}
