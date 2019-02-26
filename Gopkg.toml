@@ -8,3 +8,7 @@
 [[constraint]]
   name = "github.com/pkg/errors"
   version = "0.8.1"
+
+[[constraint]]
+  name = "github.com/fatih/color"
+  version = "1.7.0"

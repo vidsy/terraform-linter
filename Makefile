@@ -1,8 +1,9 @@
 BRANCH ?= "master"
+CMD_PATH ?= "github.com/vidsy/terraform-linter/cmd/terraform/linter"
+HIDE_STACK_TRACES ?= "false"
+PACKAGES ?= "./..."
 REPONAME ?= "terraform-linter"
 VERSION ?= $(shell cat ./VERSION)
-PACKAGES ?= "./..."
-CMD_PATH ?= "github.com/vidsy/terraform-linter/cmd/terraform/linter"
 
 DEFAULT: test
 
@@ -36,7 +37,7 @@ release:
 	@GITHUB_TOKEN=${VIDSY_GOBOT_GITHUB_TOKEN}  goreleaser
 
 run: build
-	@./${REPONAME} ${ARGS}
+	@./${REPONAME} ${ARGS} --hide-stack-traces=${HIDE_STACK_TRACES}
 
 test:
 	@go test "${PACKAGES}" -cover
