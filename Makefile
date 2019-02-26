@@ -10,7 +10,7 @@ build:
 	@go build -i -o ${REPONAME} ${CMD_PATH}
 
 build-image:
-	@docker build -t vidsyhq/${REPONAME} .
+	@docker build -t vidsyhq/${REPONAME} --build-arg VERSION=${VERSION} .
 
 docker-login:
 	@docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
