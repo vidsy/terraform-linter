@@ -27,6 +27,6 @@ func PrintFatalError(err error, hideStackTraces bool) {
 		)
 	}
 
-	fmt.Printf("\n%s\n", formattedError)
+	fmt.Printf("\n%s\n\n", formattedError)
 	os.Exit(1)
 }

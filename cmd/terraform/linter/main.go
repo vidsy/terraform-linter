@@ -10,13 +10,18 @@ import (
 )
 
 func main() {
-	tfDirectory := flag.String(
+	var hideStackTraces bool
+	var tfDirectory string
+
+	flag.StringVar(
+		&tfDirectory,
 		"tf-directory",
 		"",
 		"The directory that contains the terraform files to lint",
 	)
 
-	hideStackTraces := flag.Bool(
+	flag.BoolVar(
+		&hideStackTraces,
 		"hide-stack-traces",
 		true,
 		"Should stack traces be shown for errors",
@@ -24,19 +29,19 @@ func main() {
 
 	flag.Parse()
 
-	err := isValidDirectory(*tfDirectory)
+	err := isValidDirectory(tfDirectory)
 	if err != nil {
-		linter.PrintFatalError(err, *hideStackTraces)
+		linter.PrintFatalError(err, hideStackTraces)
 	}
 
-	files, err := ioutil.ReadDir(*tfDirectory)
+	files, err := ioutil.ReadDir(tfDirectory)
 	if err != nil {
-		linter.PrintFatalError(err, *hideStackTraces)
+		linter.PrintFatalError(err, hideStackTraces)
 	}
 
-	err = linter.LintDirectory(*tfDirectory, files)
+	err = linter.LintDirectory(tfDirectory, files)
 	if err != nil {
-		linter.PrintFatalError(err, *hideStackTraces)
+		linter.PrintFatalError(err, hideStackTraces)
 	}
 }
 
