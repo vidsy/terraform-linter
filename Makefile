@@ -1,4 +1,4 @@
-BRANCH ?= "master"
+ANCH ?= "master"
 REPONAME ?= "terraform-linter"
 VERSION ?= $(shell cat ./VERSION)
 PACKAGES ?= "./..."
@@ -8,6 +8,12 @@ DEFAULT: test
 
 build:
 	@go build -i -o ${REPONAME} ${CMD_PATH}
+
+build-image:
+	@docker build -t vidsyhq/${REPONAME} .
+
+docker-login:
+	@docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
 
 install:
 	@echo "=> Installing dependencies"
@@ -19,6 +25,12 @@ push-tag:
 	git pull origin ${BRANCH}
 	git tag ${VERSION}
 	git push origin ${BRANCH} ${VERSION}
+
+push-to-registry:
+	@docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USER} -p ${DOCKER_PASS}
+	@docker tag vidsyhq/${REPONAME}:latest vidsyhq/${REPONAME}:${CIRCLE_TAG}
+	@docker push vidsyhq/${REPONAME}:${CIRCLE_TAG}
+	@docker push vidsyhq/${REPONAME}
 
 release:
 	rm -rf dist
