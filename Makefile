@@ -1,4 +1,4 @@
-ANCH ?= "master"
+BANCH ?= "master"
 REPONAME ?= "terraform-linter"
 VERSION ?= $(shell cat ./VERSION)
 PACKAGES ?= "./..."
