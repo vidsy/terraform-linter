@@ -26,8 +26,7 @@ push-tag:
 	git tag ${VERSION}
 	git push origin ${BRANCH} ${VERSION}
 
-push-to-registry:
-	@docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USER} -p ${DOCKER_PASS}
+push-to-registry: docker login
 	@docker tag vidsyhq/${REPONAME}:latest vidsyhq/${REPONAME}:${CIRCLE_TAG}
 	@docker push vidsyhq/${REPONAME}:${CIRCLE_TAG}
 	@docker push vidsyhq/${REPONAME}
