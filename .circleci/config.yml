@@ -66,7 +66,7 @@ workflows:
       - common/check-version:
           <<: *ignore-master
       - go/install-and-build-binary:
-          binary-name: cmd/terraform/linter/terraform-linter
+          binary-name: linter
           executor: build-path-builder
           filters:
             <<: *tagged-build
