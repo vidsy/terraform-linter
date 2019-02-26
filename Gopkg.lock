@@ -435,6 +435,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/fatih/color",
     "github.com/hashicorp/terraform/config",
     "github.com/pkg/errors",
   ]

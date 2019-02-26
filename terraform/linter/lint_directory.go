@@ -1,4 +1,4 @@
-package main
+package linter
 
 import (
 	"fmt"
@@ -40,10 +40,9 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 		}
 
 		if err != nil {
-			return errors.Errorf(
-				"%s - %s",
-				file.Name(),
+			return NewError(
 				err,
+				file.Name(),
 			)
 		}
 	}

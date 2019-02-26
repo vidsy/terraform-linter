@@ -3,33 +3,45 @@ package main
 import (
 	"flag"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/pkg/errors"
+	"github.com/vidsy/terraform-linter/terraform/linter"
 )
 
 func main() {
-	tfDirectory := flag.String(
+	var hideStackTraces bool
+	var tfDirectory string
+
+	flag.StringVar(
+		&tfDirectory,
 		"tf-directory",
 		"",
 		"The directory that contains the terraform files to lint",
 	)
+
+	flag.BoolVar(
+		&hideStackTraces,
+		"hide-stack-traces",
+		true,
+		"Should stack traces be shown for errors",
+	)
+
 	flag.Parse()
 
-	err := isValidDirectory(*tfDirectory)
+	err := isValidDirectory(tfDirectory)
 	if err != nil {
-		logFatalError(err)
+		linter.PrintFatalError(err, hideStackTraces)
 	}
 
-	files, err := ioutil.ReadDir(*tfDirectory)
+	files, err := ioutil.ReadDir(tfDirectory)
 	if err != nil {
-		logFatalError(err)
+		linter.PrintFatalError(err, hideStackTraces)
 	}
 
-	err = LintDirectory(*tfDirectory, files)
+	err = linter.LintDirectory(tfDirectory, files)
 	if err != nil {
-		logFatalError(err)
+		linter.PrintFatalError(err, hideStackTraces)
 	}
 }
 
@@ -51,8 +63,4 @@ func isValidDirectory(path string) error {
 	}
 
 	return nil
-}
-
-func logFatalError(err error) {
-	log.Fatalf("%+v", err)
 }
