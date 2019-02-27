@@ -41,7 +41,7 @@ func LintData(conf *config.Config) error {
 }
 
 // LintNames linters the names of resources, modules, providers, locals, variables,
-// data and output resources.
+// data and output resources for dashes.
 func LintNames(conf *config.Config) error {
 	errorMessage := "%s name '%s' contains hyphens, please replace with underscores"
 
