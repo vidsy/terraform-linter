@@ -145,8 +145,6 @@ func lintResources(conf *config.Config) error {
 	err := shouldNotContain(
 		conf,
 		terraformTypeData,
-		terraformTypeLocal,
-		terraformTypeModule,
 		terraformTypeOutput,
 		terraformTypeProvider,
 		terraformTypeTerraform,
