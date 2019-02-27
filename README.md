@@ -27,7 +27,7 @@ terraform-linter --tf-directory"/path/to/terrform/files"
 
 ## Docker
 
-The binary is also built to a container and pushed up to docker hub, to lint the files in the current directory run:
+The binary is also built to a container and pushed up to docker hub. To lint the files in the current directory run:
 
 ```
 docker run --rm=true -v ${pwd}:/stack vidsyhq/terraform-linter --tf-directory="/stack"
