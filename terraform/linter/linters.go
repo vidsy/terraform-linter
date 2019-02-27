@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// LintData lints data.
+// LintData lints resources in a data.tf file.
 func LintData(conf *config.Config) error {
 	err := shouldNotContain(
 		conf,
@@ -43,77 +43,53 @@ func LintData(conf *config.Config) error {
 // LintNames linters the names of resources, modules, providers, locals, variables,
 // data and output resources.
 func LintNames(conf *config.Config) error {
+	errorMessage := "%s name '%s' contains hyphens, please replace with underscores"
+
 	for _, local := range conf.Locals {
 		if !isValidName(local.Name) {
-			return errors.Errorf(
-				"local name '%s' contains hyphens, please replace with underscores",
-				local.Name,
-			)
+			return errors.Errorf(errorMessage, "local", local.Name)
 		}
 	}
 
 	for _, module := range conf.Modules {
 		if !isValidName(module.Name) {
-			return errors.Errorf(
-				"module name '%s' contains hyphens, please replace with underscores",
-				module.Name,
-			)
+			return errors.Errorf(errorMessage, "module", module.Name)
 		}
 	}
 
 	for _, output := range conf.Outputs {
 		if !isValidName(output.Name) {
-			return errors.Errorf(
-				"output name '%s' contains hyphens, please replace with underscores",
-				output.Name,
-			)
+			return errors.Errorf(errorMessage, "output", output.Name)
 		}
 	}
 
 	for _, provider := range conf.ProviderConfigs {
 		if !isValidName(provider.Name) {
-			return errors.Errorf(
-				"provider name '%s' contains hyphens, please replace with underscores",
-				provider.Name,
-			)
+			return errors.Errorf(errorMessage, "provider", provider.Name)
 		}
 	}
 
 	for _, resource := range conf.Resources {
 		if !isValidName(resource.Name) {
-			errorMessage := "%s name '%s' contains hyphens, please replace with underscores"
-
 			switch resource.Mode {
 			case config.DataResourceMode:
-				return errors.Errorf(
-					errorMessage,
-					"data",
-					resource.Name,
-				)
-
+				return errors.Errorf(errorMessage, "data", resource.Name)
 			case config.ManagedResourceMode:
-				return errors.Errorf(
-					errorMessage,
-					"resource",
-					resource.Name,
-				)
+				return errors.Errorf(errorMessage, "resource", resource.Name)
 			}
 		}
 	}
 
 	for _, variable := range conf.Variables {
 		if !isValidName(variable.Name) {
-			return errors.Errorf(
-				"variable name '%s' contains hyphens, please replace with underscores",
-				variable.Name,
-			)
+			return errors.Errorf(errorMessage, "variable", variable.Name)
 		}
 	}
 
 	return nil
 }
 
-// LintOutputs lints outputs.
+// LintOutputs lints outputs in a outputs.tf file.
 func LintOutputs(conf *config.Config) error {
 	err := shouldNotContain(
 		conf,
@@ -139,7 +115,7 @@ func LintOutputs(conf *config.Config) error {
 }
 
 // LintProviders lints providers and terraform
-// types.
+// types in a providers.tf file.
 func LintProviders(conf *config.Config) error {
 	err := shouldNotContain(
 		conf,
@@ -169,7 +145,8 @@ func LintProviders(conf *config.Config) error {
 	return nil
 }
 
-// LintResources lints resources.
+// LintResources lints resources, modules and locals in
+// a resources.tf file.
 func LintResources(conf *config.Config) error {
 	err := shouldNotContain(
 		conf,
@@ -191,18 +168,10 @@ func LintResources(conf *config.Config) error {
 		)
 	}
 
-	for _, resource := range conf.Resources {
-		if resource.Mode == config.DataResourceMode {
-			return errors.New(
-				"should not contain any data resources, please move to 'data.tf'",
-			)
-		}
-	}
-
 	return nil
 }
 
-// LintVariables lints variables.
+// LintVariables lints variables in a variables.tf file.
 func LintVariables(conf *config.Config) error {
 	err := shouldNotContain(
 		conf,
@@ -241,7 +210,6 @@ func isValidName(name string) bool {
 }
 
 func shouldNotContain(conf *config.Config, types ...terraformType) error {
-	var err error
 	errorMessage := "should not contain any %s resource(s), please move to '%s.tf'"
 
 	for _, terraformType := range types {
@@ -282,5 +250,5 @@ func shouldNotContain(conf *config.Config, types ...terraformType) error {
 		}
 	}
 
-	return err
+	return nil
 }
