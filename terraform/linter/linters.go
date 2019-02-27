@@ -1,10 +1,15 @@
 package linter
 
 import (
-	"strings"
+	"fmt"
+	"regexp"
 
 	"github.com/hashicorp/terraform/config"
 	"github.com/pkg/errors"
+)
+
+const (
+	validNameRegex = `^[a-z0-9_]+$`
 )
 
 // LintData lints resources in a data.tf file.
@@ -43,7 +48,10 @@ func LintData(conf *config.Config) error {
 // LintNames linters the names of resources, modules, providers, locals, variables,
 // data and output resources for dashes.
 func LintNames(conf *config.Config) error {
-	errorMessage := "%s name '%s' contains hyphens, please replace with underscores"
+	errorMessage := fmt.Sprintf(
+		"%%s name '%%s' is not valid for the regex '%s', please replace the invalid characters",
+		validNameRegex,
+	)
 
 	for _, local := range conf.Locals {
 		if !isValidName(local.Name) {
@@ -206,7 +214,8 @@ func LintVariables(conf *config.Config) error {
 }
 
 func isValidName(name string) bool {
-	return !strings.Contains(name, "-")
+	nameRegex := regexp.MustCompile(validNameRegex)
+	return nameRegex.MatchString(name)
 }
 
 func shouldNotContain(conf *config.Config, types ...terraformType) error {

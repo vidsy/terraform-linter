@@ -35,7 +35,16 @@ docker run --rm=true -v ${pwd}:/stack vidsyhq/terraform-linter --tf-directory="/
 
 ## Linting rules
 
-The following files are linted within the given stack:
+The following file structure is linted (Not all files are mandatory):
+
+```
+- stack
+-- data.tf (Only 'data' resources)
+-- outputs.tf (Only 'output' resources)
+-- providers.tf (Only 'provider' and 'terraform' resources)
+-- resources.tf (Only `resource', 'module' or 'local' resources)
+-- variables.tf (Only 'variable' resources)
+```
 
 ### providers.tf
 
