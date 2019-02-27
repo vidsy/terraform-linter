@@ -12,6 +12,5 @@ const (
 )
 
 type (
-	// TerraformTypes the different types or terraform resources.
 	terraformType string
 )
