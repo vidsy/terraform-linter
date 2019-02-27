@@ -48,7 +48,7 @@ If this file exists, the following is checked:
 
 If this file exists, the following is checked:
 
-1. Should contain 1 or more `local, `module` or `resource` resources.
+1. Should contain 1 or more `local`, `module` or `resource` resources.
 1. Should not contain `data`, `provider`, `terraform` or `output` resources.
 
 ### data.tf
