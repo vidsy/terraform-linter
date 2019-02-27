@@ -7,7 +7,7 @@
 
 [![Documentation](https://godoc.org/github.com/vidsy/terraform-linter?status.svg)](https://godoc.org/github.com/vidsy/terraform-linter)
 
-![image](https://user-images.githubusercontent.com/527874/53488637-d0864580-3a86-11e9-9fc4-ea0eb042c3a7.png)
+![image](https://user-images.githubusercontent.com/527874/53488721-0a574c00-3a87-11e9-84f9-2245a505bc97.png)
 
 # Vidsy linting
 
