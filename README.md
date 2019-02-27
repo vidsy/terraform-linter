@@ -7,38 +7,60 @@
 
 [![Documentation](https://godoc.org/github.com/vidsy/terraform-linter?status.svg)](https://godoc.org/github.com/vidsy/terraform-linter)
 
+![image](https://user-images.githubusercontent.com/527874/53488637-d0864580-3a86-11e9-9fc4-ea0eb042c3a7.png)
+
 # Vidsy linting
 
 Terraform stacks can quickly get out of sync as different people and teams work on them. At Vidsy we have a set of simple guidelines for stacks to try and keep them consistent and easy to navigate and read.
 
+# Usage
+
+## Releases
+
+The binary is versioned and released on each tagged merge to master, this can be found in the [releases](https://github.com/vidsy/terraform-linter/releases).
+
+Once downloaded and installed, run the following to lint your stack:
+
+```
+terraform-linter --tf-directory"/path/to/terrform/files"
+```
+
+## Docker
+
+The binary is also built to a container and pushed up to docker hub, to lint the files in the current directory run:
+
+```
+docker run --rm=true -v ${pwd}:/stack vidsyhq/terraform-linter --tf-directory="/stack"
+```
+
 ## Linting rules
 
-The following files are checked for certain linting requirements:
+The following files are linted within the given stack:
 
 ### providers.tf
 
 If this file exists, the following is checked:
 
 1. Should only contain 1 or more `provider` configs and one `terraform` config.
-1. Should contain no `modules`, `resources`, `outputs` or `data` definitions.
+1. Should contain no `data`, `local`, `module`, `output` or`resource` resources.
 
-## resources.tf
-
-If this file exists, the following is checked:
-
-1. Should contain 1 or more `resource`, `module` or `local` definitions.
-1. Should not contain `provider`, `terraform` or `output` definitions.
-
-## data.tf
+### resources.tf
 
 If this file exists, the following is checked:
 
-1. Should contain 1 or more `data` definitions.
-1. Should not contain `provider`, `resource`, `local`, `output` or `terraform` definitions.
+1. Should contain 1 or more `local, `module` or `resource` resources.
+1. Should not contain `data`, `provider`, `terraform` or `output` resources.
 
-## outputs.tf
+### data.tf
 
 If this file exists, the following is checked:
 
-1. Should contain 1 or more `output` definitions.
-1. Should not contain `provider`, `resource`, `local`, `data` or `terraform` definitions.
+1. Should contain 1 or more `data` resources.
+1. Should not contain `local`, `module`, `output`, `provider`, `resource` or `terraform` resources.
+
+### outputs.tf
+
+If this file exists, the following is checked:
+
+1. Should contain 1 or more `output` resources.
+1. Should not contain `data`, `local`, `module`, `provider`, `resource` or `terraform` resources.
