@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/pkg/errors"
 
@@ -48,7 +49,57 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 	}
 
 	return nil
+}
 
+func lintName(conf *config.Config) error {
+	for _, variable := range conf.Variables {
+		if !isValidName(variable.Name) {
+			return errors.Errorf(
+				"variable name '%s' contains hyphens, please replace with underscores",
+				variable.Name,
+			)
+		}
+	}
+
+	for _, resource := range conf.Resources {
+		if !isValidName(resource.Name) {
+			return errors.Errorf(
+				"resource name '%s' contains hyphens, please replace with underscores",
+				resource.Name,
+			)
+		}
+	}
+
+	for _, module := range conf.Modules {
+		if !isValidName(module.Name) {
+			return errors.Errorf(
+				"module name '%s' contains hyphens, please replace with underscores",
+				module.Name,
+			)
+		}
+	}
+
+	for _, local := range conf.Locals {
+		if !isvalidname(local.Name) {
+			return errors.errorf(
+				"local name '%s' contains hyphens, please replace with underscores",
+				local.Name,
+			)
+		}
+	}
+
+	for _, output := range conf.Outputs {
+		if !isvalidname(output.Name) {
+			return errors.errorf(
+				"output name '%s' contains hyphens, please replace with underscores",
+				output.Name,
+			)
+		}
+	}
+}
+
+func isValidName(name string) bool {
+	return strings.Contains(name, "-")
 }
 
 func lintData(resources []*config.Resource) error {
