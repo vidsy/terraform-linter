@@ -18,7 +18,7 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 		}
 
 		filePath := fmt.Sprintf("%s/%s", directory, file.Name())
-		config, err := config.LoadFile(filePath)
+		conf, err := config.LoadFile(filePath)
 		if err != nil {
 			return errors.Wrapf(
 				err,
@@ -43,7 +43,7 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 		}
 
 		for _, linter := range linters {
-			if err := linter(config); err != nil {
+			if err := linter(conf); err != nil {
 				return NewError(
 					err,
 					file.Name(),
