@@ -42,6 +42,7 @@ The following files are linted within the given stack:
 If this file exists, the following is checked:
 
 1. Should only contain 1 or more `provider` configs and one `terraform` config.
+1. Names should not contains dashes.
 1. Should contain no `data`, `local`, `module`, `output` or`resource` resources.
 
 ### resources.tf
@@ -49,6 +50,7 @@ If this file exists, the following is checked:
 If this file exists, the following is checked:
 
 1. Should contain 1 or more `local`, `module` or `resource` resources.
+1. Names should not contains dashes.
 1. Should not contain `data`, `provider`, `terraform` or `output` resources.
 
 ### data.tf
@@ -56,6 +58,7 @@ If this file exists, the following is checked:
 If this file exists, the following is checked:
 
 1. Should contain 1 or more `data` resources.
+1. Names should not contains dashes.
 1. Should not contain `local`, `module`, `output`, `provider`, `resource` or `terraform` resources.
 
 ### outputs.tf
@@ -63,4 +66,5 @@ If this file exists, the following is checked:
 If this file exists, the following is checked:
 
 1. Should contain 1 or more `output` resources.
+1. Names should not contains dashes.
 1. Should not contain `data`, `local`, `module`, `provider`, `resource` or `terraform` resources.
