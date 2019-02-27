@@ -27,7 +27,7 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 			)
 		}
 
-		var linters []Linter
+		linters := []Linter{LintNames}
 
 		switch file.Name() {
 		case "data.tf":
@@ -58,49 +58,4 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 
 func isValidTFFile(file os.FileInfo) bool {
 	return !file.IsDir() && filepath.Ext(file.Name()) == ".tf"
-}
-
-func shouldNotContain(conf *config.Config, types ...terraformType) error {
-	var err error
-	errorMessage := "should not contain any %s resource(s), please move to '%s.tf'"
-
-	for _, terraformType := range types {
-		switch terraformType {
-		case terraformTypeData:
-			for _, resource := range conf.Resources {
-				if resource.Mode == config.DataResourceMode {
-					return errors.Errorf(errorMessage, "data", "data")
-				}
-			}
-		case terraformTypeResource:
-			for _, resource := range conf.Resources {
-				if resource.Mode == config.ManagedResourceMode {
-					return errors.Errorf(errorMessage, "resource", "resources")
-				}
-			}
-		case terraformTypeOutput:
-			if len(conf.Outputs) > 0 {
-				return errors.Errorf(errorMessage, "output", "outputs")
-			}
-		case terraformTypeVariable:
-			if len(conf.Variables) > 0 {
-				return errors.Errorf(errorMessage, "variable", "variables")
-			}
-		case terraformTypeLocal:
-			if len(conf.Locals) > 0 {
-				return errors.Errorf(errorMessage, "local", "resources")
-			}
-		case terraformTypeProvider:
-			if len(conf.ProviderConfigs) > 0 {
-				return errors.Errorf(errorMessage, "provider", "providers")
-			}
-
-		case terraformTypeTerraform:
-			if conf.Terraform != nil {
-				return errors.Errorf(errorMessage, "terraform", "providers")
-			}
-		}
-	}
-
-	return err
 }
