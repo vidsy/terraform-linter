@@ -31,6 +31,8 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 		switch file.Name() {
 		case "data.tf":
 			err = lintData(config.Resources)
+		case "outputs.tf":
+			err = lintOutputs(config.Outputs)
 		case "providers.tf":
 			err = lintProviders(config)
 		case "resources.tf":
@@ -64,6 +66,16 @@ func lintData(resources []*config.Resource) error {
 				"should only contain data resources, please remove",
 			)
 		}
+	}
+
+	return nil
+}
+
+func lintOutputs(outputs []*config.Output) error {
+	if len(outputs) == 0 {
+		return errors.New(
+			"no outputs found, either add some or remove the file",
+		)
 	}
 
 	return nil
