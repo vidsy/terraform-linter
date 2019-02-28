@@ -37,7 +37,7 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 		case "providers.tf":
 			linters = append(linters, LintProviders)
 		case "resources.tf":
-			linters = append(linters, LintResources)
+			linters = append(linters, LintResources, LintUnusedVariables)
 		case "variables.tf":
 			linters = append(linters, LintVariables)
 		}
@@ -50,6 +50,23 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 				)
 			}
 		}
+	}
+
+	conf, err := config.LoadDir(directory)
+	if err != nil {
+		return errors.Wrapf(
+			err,
+			"Problem parsing terraform config directory %s",
+			directory,
+		)
+	}
+
+	err = LintUnusedVariables(conf)
+	if err != nil {
+		return NewError(
+			err,
+			directory,
+		)
 	}
 
 	return nil
