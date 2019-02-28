@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	validNameRegex = `^[a-z0-9_]+$`
+	validNameRegex = `^[a-z0-9][a-z0-9_]*[a-z0-9]$`
 )
 
 // LintData lints resources in a data.tf file.
