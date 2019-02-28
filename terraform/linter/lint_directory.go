@@ -37,7 +37,7 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 		case "providers.tf":
 			linters = append(linters, LintProviders)
 		case "resources.tf":
-			linters = append(linters, LintResources, LintUnusedVariables)
+			linters = append(linters, LintResources)
 		case "variables.tf":
 			linters = append(linters, LintVariables)
 		}
