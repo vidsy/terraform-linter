@@ -35,13 +35,23 @@ docker run --rm=true -v ${pwd}:/stack vidsyhq/terraform-linter --tf-directory="/
 
 ## Linting rules
 
-The following files are linted within the given stack:
+The following file structure is linted (Not all files are mandatory):
+
+```
+- stack
+-- data.tf (Only 'data' resources)
+-- outputs.tf (Only 'output' resources)
+-- providers.tf (Only 'provider' and 'terraform' resources)
+-- resources.tf (Only `resource', 'module' or 'local' resources)
+-- variables.tf (Only 'variable' resources)
+```
 
 ### providers.tf
 
 If this file exists, the following is checked:
 
 1. Should only contain 1 or more `provider` configs and one `terraform` config.
+1. Names should match `^[a-z0-9][a-z0-9_]*[a-z0-9]$`.
 1. Should contain no `data`, `local`, `module`, `output` or`resource` resources.
 
 ### resources.tf
@@ -49,6 +59,7 @@ If this file exists, the following is checked:
 If this file exists, the following is checked:
 
 1. Should contain 1 or more `local`, `module` or `resource` resources.
+1. Names should match `^[a-z0-9][a-z0-9_]*[a-z0-9]$`.
 1. Should not contain `data`, `provider`, `terraform` or `output` resources.
 
 ### data.tf
@@ -56,6 +67,7 @@ If this file exists, the following is checked:
 If this file exists, the following is checked:
 
 1. Should contain 1 or more `data` resources.
+1. Names should match `^[a-z0-9][a-z0-9_]*[a-z0-9]$`.
 1. Should not contain `local`, `module`, `output`, `provider`, `resource` or `terraform` resources.
 
 ### outputs.tf
@@ -63,4 +75,5 @@ If this file exists, the following is checked:
 If this file exists, the following is checked:
 
 1. Should contain 1 or more `output` resources.
+1. Names should match `^[a-z0-9][a-z0-9_]*[a-z0-9]$`.
 1. Should not contain `data`, `local`, `module`, `provider`, `resource` or `terraform` resources.
