@@ -52,6 +52,23 @@ func LintDirectory(directory string, files []os.FileInfo) error {
 		}
 	}
 
+	conf, err := config.LoadDir(directory)
+	if err != nil {
+		return errors.Wrapf(
+			err,
+			"Problem parsing terraform config directory %s",
+			directory,
+		)
+	}
+
+	err = LintUnusedVariables(conf)
+	if err != nil {
+		return NewError(
+			err,
+			directory,
+		)
+	}
+
 	return nil
 
 }

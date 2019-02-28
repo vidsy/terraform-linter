@@ -3,6 +3,7 @@ package linter
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/hashicorp/terraform/config"
 	"github.com/pkg/errors"
@@ -179,6 +180,70 @@ func LintResources(conf *config.Config) error {
 	return nil
 }
 
+// LintUnusedVariables lints for any variables that are not used in the config.
+func LintUnusedVariables(conf *config.Config) error {
+	var errs []string
+
+VariableLoop:
+	for _, variable := range conf.Variables {
+		matched := false
+
+		for _, resource := range conf.Resources {
+			if variableExists(variable.Name, resource.RawConfig.Variables) {
+				matched = true
+				continue VariableLoop
+			}
+
+			if variableExists(variable.Name, resource.RawCount.Variables) {
+				matched = true
+				continue VariableLoop
+			}
+
+		}
+
+		for _, module := range conf.Modules {
+			if variableExists(variable.Name, module.RawConfig.Variables) {
+				matched = true
+				continue VariableLoop
+			}
+		}
+
+		for _, providerConfig := range conf.ProviderConfigs {
+			if variableExists(variable.Name, providerConfig.RawConfig.Variables) {
+				matched = true
+				continue VariableLoop
+			}
+		}
+
+		for _, local := range conf.Locals {
+			if variableExists(variable.Name, local.RawConfig.Variables) {
+				matched = true
+				continue VariableLoop
+			}
+		}
+
+		for _, output := range conf.Outputs {
+			if variableExists(variable.Name, output.RawConfig.Variables) {
+				matched = true
+				continue VariableLoop
+			}
+		}
+
+		if !matched {
+			errs = append(errs, fmt.Sprintf("* - %s", variable.Name))
+		}
+	}
+
+	if len(errs) > 0 {
+		return errors.Errorf(
+			"Variable(s) unused in the stack, please use or remove:\n\n%s",
+			strings.Join(errs, "\n"),
+		)
+	}
+
+	return nil
+}
+
 // LintVariables lints variables in a variables.tf file.
 func LintVariables(conf *config.Config) error {
 	err := shouldNotContain(
@@ -260,4 +325,19 @@ func shouldNotContain(conf *config.Config, types ...terraformType) error {
 	}
 
 	return nil
+}
+
+func variableExists(existingVariable string, variablesToCheck map[string]config.InterpolatedVariable) bool {
+	for _, variable := range variablesToCheck {
+
+		switch variable.(type) {
+		case *config.UserVariable, *config.CountVariable:
+			varibleName := strings.Replace(variable.FullKey(), "var.", "", 1)
+			if existingVariable == varibleName {
+				return true
+			}
+		}
+	}
+
+	return false
 }
