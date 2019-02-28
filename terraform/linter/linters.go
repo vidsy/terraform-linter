@@ -236,7 +236,7 @@ VariableLoop:
 
 	if len(errs) > 0 {
 		return errors.Errorf(
-			"Variable(s) unused in the stack, please use or remove:\n%s",
+			"Variable(s) unused in the stack, please use or remove:\n\n%s",
 			strings.Join(errs, "\n"),
 		)
 	}
