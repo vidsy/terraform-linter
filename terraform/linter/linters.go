@@ -266,15 +266,6 @@ func LintVariables(conf *config.Config) error {
 		)
 	}
 
-	for _, variable := range conf.Variables {
-		if val, ok := variable.Default.(string); ok && val == "" {
-			return errors.Errorf(
-				"variable '%s' contains a blank default, please remove the default",
-				variable.Name,
-			)
-		}
-	}
-
 	return nil
 }
 
