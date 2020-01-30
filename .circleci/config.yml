@@ -13,7 +13,7 @@ executors:
     docker:
       - image: vidsyhq/go-builder:latest
     environment:
-        BUILD_PATH: cmd/terraform/linter
+        BUILD_PATH: ./cmd/terraform/linter
 jobs:
   release:
     working_directory: /terraform-linter
