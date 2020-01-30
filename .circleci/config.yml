@@ -1,22 +1,22 @@
 version: 2.1
 
-vendor-cache-key: &vendor-cache-key vendor-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ checksum "Gopkg.lock" }}-v1
+vendor-cache-key: &vendor-cache-key vendor-cache-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ checksum "go.sum" }}-v1
 
 vendor-cache-key-parameter: &vendor-cache-key-parameter
   vendor-cache-key: *vendor-cache-key
 
 working-directory: &working-directory
-  working-directory: /go/src/github.com/vidsy/terraform-linter
+  working-directory: /terraform-linter
 
 executors:
   build-path-builder:
     docker:
       - image: vidsyhq/go-builder:latest
     environment:
-        BUILD_PATH: github.com/vidsy/terraform-linter/cmd/terraform/linter
+        BUILD_PATH: ./cmd/terraform/linter
 jobs:
   release:
-    working_directory: /go/src/github.com/vidsy/terraform-linter
+    working_directory: /terraform-linter
     docker:
       - image: vidsyhq/go-builder:latest
     steps:
