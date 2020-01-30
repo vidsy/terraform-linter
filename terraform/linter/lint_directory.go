@@ -1,9 +1,12 @@
 package linter
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/hashicorp/terraform/config"
 	"github.com/pkg/errors"
@@ -12,13 +15,47 @@ import (
 // LintDirectory takes an set files an lints them based on the Vidsy
 // structure of stacks.
 func LintDirectory(directory string, files []os.FileInfo) error {
-	for _, file := range files {
-		if !isValidTFFile(file) {
+	for _, info := range files {
+		if !isValidTFFile(info) {
 			continue
 		}
 
-		filePath := fmt.Sprintf("%s/%s", directory, file.Name())
-		conf, err := config.LoadFile(filePath)
+		filePath := fmt.Sprintf("%s/%s", directory, info.Name())
+
+		parts := strings.Split(info.Name(), ".")
+		name := parts[0]
+
+		tf, err := ioutil.TempFile(os.TempDir(), fmt.Sprintf("%s*.tf", name))
+		if err != nil {
+			return err
+		}
+
+		defer tf.Close()
+
+		file, err := os.Open(filePath)
+		if err != nil {
+			return err
+		}
+
+		defer file.Close()
+
+		buf := bytes.NewBuffer([]byte{})
+		if _, err := buf.Write([]byte("#terraform:hcl2\n")); err != nil {
+			return err
+		}
+		if _, err := buf.ReadFrom(file); err != nil {
+			return err
+		}
+
+		if _, err := tf.Write(buf.Bytes()); err != nil {
+			return err
+		}
+
+		fmt.Println(tf.Name())
+
+		defer os.Remove(tf.Name())
+
+		conf, err := config.LoadFile(tf.Name())
 		if err != nil {
 			return errors.Wrapf(
 				err,
